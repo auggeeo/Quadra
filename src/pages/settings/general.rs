@@ -35,10 +35,8 @@ pub fn general_section(state: &AppState) -> gtk::Box {
         .set_subtitle("Show the Roblox game you're in on your Discord profile");
     ask_for_discord_access_when_turned_on(&discord_rich_presence_row);
 
-    let discord_invites_row =
-        switch_row(state, "discord-invites", "Enable Discord Invites");
-    discord_invites_row
-        .set_subtitle("Invite your friends, or join them via Discord.");
+    let discord_invites_row = switch_row(state, "discord-invites", "Enable Discord Invites");
+    discord_invites_row.set_subtitle("Invite your friends, or join them via Discord.");
 
     let discord_group = adw::PreferencesGroup::builder().title("Discord").build();
     discord_group.add(&discord_rich_presence_row);
