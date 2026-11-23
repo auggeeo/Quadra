@@ -18,7 +18,7 @@ jobs:
   appimage:
     name: Build AppImage
     if: ${{ inputs.release || !startsWith(github.event.head_commit.message, 'release:') }}
-    runs-on: ${{ (inputs.release || !vars.USE_SELF_HOSTED_RUNNER) && 'ubuntu-24.04' || 'kvm' }}
+    runs-on: ${{ (inputs.release || vars.USE_SELF_HOSTED_RUNNER != 'true') && 'ubuntu-24.04' || 'kvm' }}
     container:
       image: debian:forky
     env:
