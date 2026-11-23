@@ -39,10 +39,11 @@ pub const QUADRA_PREFIX: &str = "Quadra";
 pub const ROSEMARY_DEFAULT_PREFIX: &str = "Rosemary default";
 
 const SAVE_DELAY_AFTER_LAST_CHANGE: Duration = Duration::from_millis(500);
-const SAVED_PROPERTIES: [&str; 41] = [
+const SAVED_PROPERTIES: [&str; 42] = [
     "launch-mode",
     "run-in-background",
     "discord-rich-presence",
+    "discord-invites",
     "runtime",
     "runner",
     "custom-runner-path",
@@ -135,6 +136,7 @@ struct SavedSettings {
     launch_mode: LaunchMode,
     run_in_background: bool,
     discord_rich_presence: bool,
+    discord_invites: bool,
     runtime: Runtime,
     runner: String,
     #[serde(skip_serializing_if = "String::is_empty")]
@@ -191,6 +193,7 @@ impl Default for SavedSettings {
             launch_mode: LaunchMode::default(),
             run_in_background: false,
             discord_rich_presence: false,
+            discord_invites: false,
             runtime: Runtime::default(),
             runner: QUADRA_RUNNER.to_owned(),
             custom_runner_path: String::new(),
@@ -263,6 +266,8 @@ mod imp {
         run_in_background: Cell<bool>,
         #[property(get, set)]
         discord_rich_presence: Cell<bool>,
+        #[property(get, set)]
+        discord_invites: Cell<bool>,
         #[property(get, set, builder(Runtime::default()))]
         runtime: Cell<Runtime>,
         #[property(get, set)]
@@ -439,6 +444,7 @@ impl AppState {
             .property("launch-mode", settings.launch_mode)
             .property("run-in-background", settings.run_in_background)
             .property("discord-rich-presence", settings.discord_rich_presence)
+            .property("discord-invites", settings.discord_invites)
             .property("runtime", settings.runtime)
             .property("runner", settings.runner)
             .property("custom-runner-path", settings.custom_runner_path)
@@ -657,6 +663,7 @@ impl AppState {
             launch_mode: self.launch_mode(),
             run_in_background: self.run_in_background(),
             discord_rich_presence: self.discord_rich_presence(),
+            discord_invites: self.discord_invites(),
             runtime: self.runtime(),
             runner: self.runner(),
             custom_runner_path: self.custom_runner_path(),
@@ -863,6 +870,7 @@ mod tests {
         assert_eq!(settings.runner, QUADRA_RUNNER);
         assert_eq!(settings.prefix, QUADRA_PREFIX);
         assert!(!settings.discord_rich_presence);
+        assert!(!settings.discord_invites);
         assert!(settings.vr_mirror);
         assert!(settings.show_menu_bar);
         assert_eq!(settings.vr_render_scale, DEFAULT_VR_RENDER_SCALE);

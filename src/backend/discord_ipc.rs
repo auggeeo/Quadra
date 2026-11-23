@@ -1,4 +1,4 @@
-use discord_rich_presence::activity::{Activity, Assets, Button, Timestamps};
+use discord_rich_presence::activity::{Activity, Assets, Button, Party, Secrets, SupportedPlatform, Timestamps};
 use discord_rich_presence::{DiscordIpc, DiscordIpcClient};
 use std::error::Error;
 use std::sync::mpsc::{self, RecvTimeoutError};
@@ -27,6 +27,8 @@ pub struct RichPresence {
     pub large_image: Option<Image>,
     pub small_image: Option<Image>,
     pub link: Option<Link>,
+    pub party: Option<String>,
+    pub secret: Option<String>,
 }
 
 pub struct DiscordClient {
@@ -149,8 +151,22 @@ fn as_activity(presence: &RichPresence) -> Activity<'_> {
         }
         activity = activity.timestamps(timestamps);
     }
-    if let Some(link) = &presence.link {
-        activity = activity.buttons(vec![Button::new(&link.label, &link.url)]);
+    
+    
+    if presence.party.is_some() && presence.secret.is_some() {
+        if let Some(party) = &presence.party {
+            activity = activity.party(Party::new().id(party));
+        }
+        if let Some(secret) = &presence.secret {
+            activity = activity.secrets(Secrets::new().join(secret));
+        }
+    } else {
+        if let Some(link) = &presence.link {
+            activity = activity.buttons(vec![Button::new(&link.label, &link.url)]);
+        }
     }
+    
+    activity = activity.supported_platforms(vec![SupportedPlatform::Desktop]);
+
     activity
 }

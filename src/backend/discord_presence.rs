@@ -9,6 +9,7 @@ use std::cell::RefCell;
 use std::collections::{HashMap, HashSet};
 use std::rc::Rc;
 use std::time::{Duration, Instant, SystemTime, UNIX_EPOCH};
+use sha2::{Digest, Sha256};
 
 const DISCORD_CLIENT_ID: &str = "363445589247131668";
 const QUADRA_ICON_URL: &str = "https://raw.githubusercontent.com/QuadraHQ/quadra/main/data/icons/hicolor/512x512/apps/org.quadrahq.Quadra.png";
@@ -24,6 +25,7 @@ const VERIFIED_BADGE: &str = " ☑️";
 
 struct CurrentGame {
     place_id: u64,
+    job_id: String,
     universe_id: Option<u64>,
     joined_at: i64,
     details: Option<GameDetails>,
@@ -53,7 +55,7 @@ pub fn initialize(state: &AppState) {
         move |state, output| {
             for event in game_activity::events_in(output) {
                 match event {
-                    GameEvent::Joining { place_id, .. } => join_game(state, &presence, place_id),
+                    GameEvent::Joining { place_id, job_id, .. } => join_game(state, &presence, place_id, job_id),
                     GameEvent::JoinReported { universe_id } => {
                         learn_universe(state, &presence, universe_id);
                     }
@@ -97,7 +99,7 @@ fn follow_roblox(state: &AppState, presence: &SharedPresence) {
     }
 }
 
-fn join_game(state: &AppState, presence: &SharedPresence, place_id: u64) {
+fn join_game(state: &AppState, presence: &SharedPresence, place_id: u64, job_id: String) {
     let is_already_in_this_place = presence
         .borrow()
         .game
@@ -123,6 +125,7 @@ fn join_game(state: &AppState, presence: &SharedPresence, place_id: u64) {
     );
     presence.borrow_mut().game = Some(CurrentGame {
         place_id,
+        job_id,
         universe_id: None,
         joined_at: now_in_seconds(),
         details: None,
@@ -288,7 +291,7 @@ fn show(state: &AppState, presence: &SharedPresence) {
     let mut presence = presence.borrow_mut();
     let wants_presence = state.discord_rich_presence() && state.running();
     let rich_presence = wants_presence.then(|| match &presence.game {
-        Some(game) => playing_presence(game, &presence.asset_urls),
+        Some(game) => playing_presence(game, &presence.asset_urls, Some(state.discord_invites())),
         None => idle_presence(presence.roblox_started_at),
     });
 
@@ -311,11 +314,13 @@ fn idle_presence(roblox_started_at: Option<i64>) -> RichPresence {
         large_image: Some(quadra_icon()),
         small_image: None,
         link: None,
+        party: None,
+        secret: None,
     }
 }
 
-fn playing_presence(game: &CurrentGame, asset_urls: &HashMap<u64, String>) -> RichPresence {
-    let presence = game.overrides.over(game_presence(game), asset_urls);
+fn playing_presence(game: &CurrentGame, asset_urls: &HashMap<u64, String>, discord_invites_enabled: Option<bool>) -> RichPresence {
+    let presence = game.overrides.over(game_presence(game, discord_invites_enabled), asset_urls);
     RichPresence {
         details: discord_text(&presence.details),
         state: presence.state.as_deref().map(discord_text),
@@ -332,7 +337,7 @@ fn fitted_image(image: Image) -> Image {
     }
 }
 
-fn game_presence(game: &CurrentGame) -> RichPresence {
+fn game_presence(game: &CurrentGame, discord_invites_enabled: Option<bool>) -> RichPresence {
     let game_page = Link {
         label: "See game page".to_owned(),
         url: format!("https://www.roblox.com/games/{}", game.place_id),
@@ -347,6 +352,8 @@ fn game_presence(game: &CurrentGame) -> RichPresence {
             large_image: Some(quadra_icon()),
             small_image: None,
             link: Some(game_page),
+            party: None,
+            secret: None,
         };
     };
 
@@ -362,6 +369,17 @@ fn game_presence(game: &CurrentGame) -> RichPresence {
         None => (quadra_icon(), None),
     };
 
+    let mut party = None;
+    let mut secret = None;
+
+    if discord_invites_enabled.unwrap_or(false) {
+        party = Some(Sha256::digest(game.job_id.as_bytes())
+            .iter()
+            .map(|byte| format!("{byte:02X}"))
+            .collect::<String>());
+        secret = Some(format!("{}:{}", game.place_id, game.job_id));
+    }
+
     RichPresence {
         details: game_name,
         state: Some(discord_text(&made_by(details))),
@@ -370,6 +388,8 @@ fn game_presence(game: &CurrentGame) -> RichPresence {
         large_image: Some(large_image),
         small_image,
         link: Some(game_page),
+        party,
+        secret,
     }
 }
 

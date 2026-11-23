@@ -149,30 +149,45 @@ pub enum Shortcut {
     Quadra,
     Roblox,
     Studio,
+    DiscordInvite,
 }
 
 impl Shortcut {
-    pub const ALL: [Self; 3] = [Self::Quadra, Self::Roblox, Self::Studio];
+    pub const ALL: [Self; 4] = [Self::Quadra, Self::Roblox, Self::Studio, Self::DiscordInvite];
 
     pub fn entry(self) -> DesktopEntry {
-        let (file_name, name, description, command_line_option) = match self {
+        let (file_name, name, description, command_line_option, mime_types, shown_in_app_menu) = match self {
             Self::Quadra => (
                 "org.quadrahq.Quadra.desktop",
                 "Quadra",
                 "Opens Quadra",
                 None,
+                &[] as &[&str],
+                true,
             ),
             Self::Roblox => (
                 "org.quadrahq.Quadra.Roblox.desktop",
                 "Roblox",
                 "Starts Roblox without opening Quadra",
                 Some("--roblox"),
+                &[] as &[&str],
+                true,
             ),
             Self::Studio => (
                 "org.quadrahq.Quadra.Studio.desktop",
                 "Roblox Studio",
                 "Starts Roblox Studio without opening Quadra",
                 Some("--studio"),
+                &[] as &[&str],
+                true,
+            ),
+            Self::DiscordInvite => (
+                "org.quadrahq.Quadra.Roblox.discordinvite",
+                "Roblox (via Discord Invite)",
+                "Handles a Discord Invite Join, not for launching on your own.",
+                Some("--roblox"),
+                &["x-scheme-handler/discord-363445589247131668"] as &[&str],
+                false,
             ),
         };
 
@@ -182,8 +197,8 @@ impl Shortcut {
             description,
             command_line_option,
             opens: Opens::Nothing,
-            mime_types: &[],
-            shown_in_app_menu: true,
+            mime_types,
+            shown_in_app_menu,
         }
     }
 }

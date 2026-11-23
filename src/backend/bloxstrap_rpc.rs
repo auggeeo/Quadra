@@ -102,6 +102,8 @@ impl Overrides {
             large_image: self.large_image.over(presence.large_image, asset_urls),
             small_image: self.small_image.over(presence.small_image, asset_urls),
             link: presence.link,
+            party: presence.party,
+            secret: presence.secret,
         }
     }
 }
@@ -257,6 +259,8 @@ mod tests {
                 text: "Quadra".to_owned(),
             }),
             link: None,
+            party: None,
+            secret: None,
         }
     }
 
