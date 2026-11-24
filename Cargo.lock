@@ -1351,6 +1351,7 @@ dependencies = [
  "tar",
  "toml",
  "ureq",
+ "uuid 0.8.2",
  "zip",
 ]
 

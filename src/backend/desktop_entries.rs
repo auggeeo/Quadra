@@ -149,15 +149,13 @@ pub enum Shortcut {
     Quadra,
     Roblox,
     Studio,
-    DiscordInvite,
 }
 
 impl Shortcut {
-    pub const ALL: [Self; 4] = [
+    pub const ALL: [Self; 3] = [
         Self::Quadra,
         Self::Roblox,
         Self::Studio,
-        Self::DiscordInvite,
     ];
 
     pub fn entry(self) -> DesktopEntry {
@@ -186,14 +184,6 @@ impl Shortcut {
                     Some("--studio"),
                     &[] as &[&str],
                     true,
-                ),
-                Self::DiscordInvite => (
-                    "org.quadrahq.Quadra.Roblox.discordinvite",
-                    "Roblox (via Discord Invite)",
-                    "Handles a Discord Invite Join, not for launching on your own.",
-                    Some("--roblox"),
-                    &["x-scheme-handler/discord-363445589247131668"] as &[&str],
-                    false,
                 ),
             };
 

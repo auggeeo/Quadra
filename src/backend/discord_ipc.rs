@@ -5,6 +5,7 @@ use discord_rich_presence::{DiscordIpc, DiscordIpcClient};
 use std::error::Error;
 use std::sync::mpsc::{self, RecvTimeoutError};
 use std::time::Duration;
+use uuid::Uuid;
 
 const RECONNECT_DELAY: Duration = Duration::from_secs(15);
 
@@ -73,6 +74,12 @@ fn keep_presence_shown(client_id: &str, wanted_presences: &mpsc::Receiver<Option
         }
 
         discord_is_up_to_date = show(client_id, &mut connection, wanted_presence.as_ref());
+        
+        if let Some(client) = connection.as_mut() {
+            listen_for_activity_joins(client);
+        } else {
+            eprintln!("Could not connect to Discord");
+        }
     }
 }
 
@@ -109,7 +116,33 @@ fn show(
 
 fn connect(client_id: &str) -> Option<DiscordIpcClient> {
     let mut client = DiscordIpcClient::new(client_id);
-    client.connect().ok().map(|()| client)
+
+    client.connect().ok()?;
+
+    let _ = client.send(
+        serde_json::json!({
+            "cmd": "SUBSCRIBE",
+            "evt": "ACTIVITY_JOIN",
+            "nonce": Uuid::new_v4().to_string()
+        }),
+        1,
+    );
+
+    println!("{:?}", client.recv().ok());
+
+    Some(client)
+}
+
+fn listen_for_activity_joins(client: &mut DiscordIpcClient) {
+    match client.recv() {
+        Ok(message) => {
+            println!("Discord event: {message:?}");
+            // Inspect the message and handle ACTIVITY_JOIN here.
+        }
+        Err(err) => {
+            eprintln!("Discord IPC receive error: {err}");
+        }
+    }
 }
 
 fn set_presence(
