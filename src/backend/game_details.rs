@@ -10,6 +10,7 @@ pub struct GameDetails {
     pub creator: String,
     pub creator_is_verified: bool,
     pub icon_url: Option<String>,
+    pub max_players: i32,
 }
 
 #[derive(Deserialize)]
@@ -24,9 +25,11 @@ struct Listing<T> {
 }
 
 #[derive(Deserialize)]
+#[serde(rename_all = "camelCase")]
 struct Game {
     name: String,
     creator: Creator,
+    max_players: i32,
 }
 
 #[derive(Deserialize)]
@@ -72,6 +75,7 @@ pub fn fetch_universe(universe_id: u64) -> anyhow::Result<GameDetails> {
             eprintln!("Couldn't get the icon of game {universe_id}: {error:#}");
             None
         }),
+        max_players: game.max_players,
     })
 }
 

@@ -342,6 +342,7 @@ fn idle_presence(roblox_started_at: Option<i64>) -> RichPresence {
         link: None,
         party: None,
         secret: None,
+        size: None,
     }
 }
 
@@ -386,6 +387,7 @@ fn game_presence(game: &CurrentGame, discord_invites_enabled: Option<bool>) -> R
             link: Some(game_page),
             party: None,
             secret: None,
+            size: None,
         };
     };
 
@@ -403,6 +405,7 @@ fn game_presence(game: &CurrentGame, discord_invites_enabled: Option<bool>) -> R
 
     let mut party = None;
     let mut secret = None;
+    let mut size = None;
 
     if discord_invites_enabled.unwrap_or(false) {
         party = Some(
@@ -412,6 +415,19 @@ fn game_presence(game: &CurrentGame, discord_invites_enabled: Option<bool>) -> R
                 .collect::<String>(),
         );
         secret = Some(format!("{}:{}", game.place_id, game.job_id));
+        size = Some([
+            1,
+            game.details
+                .clone()
+                .unwrap_or(GameDetails {
+                    name: "bleh".to_owned(),
+                    creator: "bleh2".to_owned(),
+                    creator_is_verified: false,
+                    icon_url: None,
+                    max_players: 0,
+                })
+                .max_players,
+        ])
     }
 
     RichPresence {
@@ -424,6 +440,7 @@ fn game_presence(game: &CurrentGame, discord_invites_enabled: Option<bool>) -> R
         link: Some(game_page),
         party,
         secret,
+        size,
     }
 }
 

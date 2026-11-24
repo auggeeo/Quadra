@@ -104,6 +104,7 @@ impl Overrides {
             link: presence.link,
             party: presence.party,
             secret: presence.secret,
+            size: presence.size,
         }
     }
 }
@@ -261,6 +262,7 @@ mod tests {
             link: None,
             party: None,
             secret: None,
+            size: None,
         }
     }
 

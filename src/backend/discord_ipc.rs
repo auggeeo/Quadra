@@ -32,6 +32,7 @@ pub struct RichPresence {
     pub link: Option<Link>,
     pub party: Option<String>,
     pub secret: Option<String>,
+    pub size: Option<[i32; 2]>,
 }
 
 pub struct DiscordClient {
@@ -85,11 +86,10 @@ fn keep_presence_shown(client_id: &str, wanted_presences: &mpsc::Receiver<Option
                             .and_then(|secret| secret.as_str())
                         {
                             println!("Discord join secret: {secret}");
-                            // Pass `secret` to your game's join/session code.
                         }
                     }
                 }
-                Ok(None) => {} // No complete IPC message ready; continue the loop.
+                Ok(None) => {}
                 Err(err) => eprintln!("Discord IPC receive error: {err}"),
             }
         }
@@ -190,7 +190,9 @@ fn as_activity(presence: &RichPresence) -> Activity<'_> {
 
     if presence.party.is_some() && presence.secret.is_some() {
         if let Some(party) = &presence.party {
-            activity = activity.party(Party::new().id(party));
+            if let Some(size) = presence.size {
+                activity = activity.party(Party::new().id(party).size(size));
+            }
         }
         if let Some(secret) = &presence.secret {
             activity = activity.secrets(Secrets::new().join(secret));
