@@ -12,13 +12,14 @@ use std::collections::{HashMap, HashSet};
 use std::rc::Rc;
 use std::time::{Duration, Instant, SystemTime, UNIX_EPOCH};
 
-const DISCORD_CLIENT_ID: &str = "363445589247131668";
+const DISCORD_CLIENT_ID: &str = "1300914368070029433";
 const QUADRA_ICON_URL: &str = "https://raw.githubusercontent.com/QuadraHQ/quadra/main/data/icons/hicolor/512x512/apps/org.quadrahq.Quadra.png";
 const QUADRA_ICON_TEXT: &str = "Quadra";
 const REFRESH_GAME_DETAILS_EVERY: Duration = Duration::from_secs(60);
 const SHORTEST_TIME_BETWEEN_RPC_UPDATES: Duration = Duration::from_secs(1);
 const WAIT_FOR_JOIN_REPORT: Duration = Duration::from_secs(10);
-const PROPERTIES_THAT_DECIDE_PRESENCE: [&str; 3] = ["running", "discord-rich-presence", "discord-invites"];
+const PROPERTIES_THAT_DECIDE_PRESENCE: [&str; 3] =
+    ["running", "discord-rich-presence", "discord-invites"];
 const SHORTEST_DISCORD_TEXT: usize = 2;
 const LONGEST_DISCORD_TEXT: usize = 128;
 const INVISIBLE_PADDING: char = '\u{2800}';
@@ -87,10 +88,10 @@ fn invite_desktop_handler(state: &AppState) {
         description: "Discord Invite Handler for Quadra (not to really be launched by the user)",
         command_line_option: Some("--roblox"),
         opens: Opens::Link,
-        mime_types: &["x-scheme-handler/discord-363445589247131668"],
+        mime_types: &["x-scheme-handler/discord-1300914368070029433"],
         shown_in_app_menu: true,
     };
-    
+
     let discord_invites = state.discord_invites();
     let desktop_entry_exists = discord_handler_desktop.exists();
 

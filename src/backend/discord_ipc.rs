@@ -74,7 +74,7 @@ fn keep_presence_shown(client_id: &str, wanted_presences: &mpsc::Receiver<Option
         }
 
         discord_is_up_to_date = show(client_id, &mut connection, wanted_presence.as_ref());
-        
+
         if let Some(client) = connection.as_mut() {
             match client.try_recv() {
                 Ok(Some((_opcode, message))) => {

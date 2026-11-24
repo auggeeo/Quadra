@@ -152,11 +152,7 @@ pub enum Shortcut {
 }
 
 impl Shortcut {
-    pub const ALL: [Self; 3] = [
-        Self::Quadra,
-        Self::Roblox,
-        Self::Studio,
-    ];
+    pub const ALL: [Self; 3] = [Self::Quadra, Self::Roblox, Self::Studio];
 
     pub fn entry(self) -> DesktopEntry {
         let (file_name, name, description, command_line_option, mime_types, shown_in_app_menu) =
