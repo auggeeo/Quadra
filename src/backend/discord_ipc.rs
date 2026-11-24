@@ -76,9 +76,22 @@ fn keep_presence_shown(client_id: &str, wanted_presences: &mpsc::Receiver<Option
         discord_is_up_to_date = show(client_id, &mut connection, wanted_presence.as_ref());
         
         if let Some(client) = connection.as_mut() {
-            listen_for_activity_joins(client);
-        } else {
-            eprintln!("Could not connect to Discord");
+            match client.try_recv() {
+                Ok(Some((_opcode, message))) => {
+                    if message.get("evt").and_then(|v| v.as_str()) == Some("ACTIVITY_JOIN") {
+                        if let Some(secret) = message
+                            .get("data")
+                            .and_then(|data| data.get("secret"))
+                            .and_then(|secret| secret.as_str())
+                        {
+                            println!("Discord join secret: {secret}");
+                            // Pass `secret` to your game's join/session code.
+                        }
+                    }
+                }
+                Ok(None) => {} // No complete IPC message ready; continue the loop.
+                Err(err) => eprintln!("Discord IPC receive error: {err}"),
+            }
         }
     }
 }
@@ -106,7 +119,7 @@ fn show(
     match set_presence(client, presence) {
         Ok(()) => true,
         Err(error) => {
-            eprintln!("Couldn't show the Discord activity: {error}");
+            println!("Couldn't show the Discord activity: {error}");
             let _ = client.close();
             *connection = None;
             false
@@ -131,18 +144,6 @@ fn connect(client_id: &str) -> Option<DiscordIpcClient> {
     println!("{:?}", client.recv().ok());
 
     Some(client)
-}
-
-fn listen_for_activity_joins(client: &mut DiscordIpcClient) {
-    match client.recv() {
-        Ok(message) => {
-            println!("Discord event: {message:?}");
-            // Inspect the message and handle ACTIVITY_JOIN here.
-        }
-        Err(err) => {
-            eprintln!("Discord IPC receive error: {err}");
-        }
-    }
 }
 
 fn set_presence(

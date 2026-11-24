@@ -50,10 +50,6 @@ type SharedPresence = Rc<RefCell<Presence>>;
 pub fn initialize(state: &AppState) {
     let presence = SharedPresence::default();
 
-    follow_roblox(state, &presence);
-    show(state, &presence);
-    invite_desktop_handler(state);
-
     state.connect_log_appended(glib::clone!(
         #[strong]
         presence,
@@ -99,9 +95,9 @@ fn invite_desktop_handler(state: &AppState) {
     let desktop_entry_exists = discord_handler_desktop.exists();
 
     if discord_invites && !desktop_entry_exists {
-        discord_handler_desktop.add().err();
+        discord_handler_desktop.add().ok();
     } else if !discord_invites && desktop_entry_exists {
-        discord_handler_desktop.remove().err();
+        discord_handler_desktop.remove().ok();
     }
 }
 
