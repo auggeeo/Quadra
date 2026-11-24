@@ -2,8 +2,8 @@
     {
         "type": "git",
         "url": "https://github.com/auggeeo/discord-rich-presence",
-        "commit": "1d380fb0c24f0702c6b3ba438fdba153ec3b0f01",
-        "dest": "flatpak-cargo/git/discord-rich-presence-1d380fb"
+        "commit": "5e7de09db5dcfc4cc0a7ca7eaedacbff385331ff",
+        "dest": "flatpak-cargo/git/discord-rich-presence-5e7de09"
     },
     {
         "type": "archive",
@@ -502,7 +502,7 @@
     {
         "type": "shell",
         "commands": [
-            "cp -r --reflink=auto \"flatpak-cargo/git/discord-rich-presence-1d380fb/.\" \"cargo/vendor/discord-rich-presence\""
+            "cp -r --reflink=auto \"flatpak-cargo/git/discord-rich-presence-5e7de09/.\" \"cargo/vendor/discord-rich-presence\""
         ]
     },
     {
