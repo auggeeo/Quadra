@@ -189,11 +189,10 @@ fn as_activity(presence: &RichPresence) -> Activity<'_> {
     }
 
     if presence.party.is_some() && presence.secret.is_some() {
-        if let Some(party) = &presence.party {
-            if let Some(size) = presence.size {
+        if let Some(party) = &presence.party
+            && let Some(size) = presence.size {
                 activity = activity.party(Party::new().id(party).size(size));
             }
-        }
         if let Some(secret) = &presence.secret {
             activity = activity.secrets(Secrets::new().join(secret));
         }
