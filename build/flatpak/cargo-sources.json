@@ -2,8 +2,8 @@
     {
         "type": "git",
         "url": "https://github.com/auggeeo/discord-rich-presence",
-        "commit": "deff36bdb0fe2f2bb8ff6a65b3c66966f100a587",
-        "dest": "flatpak-cargo/git/discord-rich-presence-deff36b"
+        "commit": "1d380fb0c24f0702c6b3ba438fdba153ec3b0f01",
+        "dest": "flatpak-cargo/git/discord-rich-presence-1d380fb"
     },
     {
         "type": "archive",
@@ -502,12 +502,12 @@
     {
         "type": "shell",
         "commands": [
-            "cp -r --reflink=auto \"flatpak-cargo/git/discord-rich-presence-deff36b/.\" \"cargo/vendor/discord-rich-presence\""
+            "cp -r --reflink=auto \"flatpak-cargo/git/discord-rich-presence-1d380fb/.\" \"cargo/vendor/discord-rich-presence\""
         ]
     },
     {
         "type": "inline",
-        "contents": "[package]\nname = \"discord-rich-presence\"\nversion = \"1.1.0\"\nauthors = [\"Violet <110789901+vionya@users.noreply.github.com>\"]\nedition = \"2018\"\ndescription = \"A simple, cross-platform crate for interfacing with Discord's IPC\"\nreadme = \"README.md\"\nrepository = \"https://github.com/vionya/discord-rich-presence\"\nlicense = \"MIT\"\nkeywords = [\"discord\", \"rich-presence\", \"ipc\"]\ndocumentation = \"https://docs.rs/discord-rich-presence\"\n\n[dependencies]\nserde_json = \"1.0\"\nserde = \"1.0\"\nserde_repr = \"0.1\"\nserde_derive = \"1.0\"\nlog = \"0.4.26\"\nthiserror = \"2.0.12\"\n\n[dependencies.uuid]\nversion = \"0.8\"\nfeatures = [\"v4\"]\n",
+        "contents": "[package]\nname = \"discord-rich-presence\"\nversion = \"1.1.0\"\nauthors = [\"Violet <110789901+vionya@users.noreply.github.com>\"]\nedition = \"2018\"\ndescription = \"A simple, cross-platform crate for interfacing with Discord's IPC\"\nreadme = \"README.md\"\nrepository = \"https://github.com/vionya/discord-rich-presence\"\nlicense = \"MIT\"\nkeywords = [\"discord\", \"rich-presence\", \"ipc\"]\ndocumentation = \"https://docs.rs/discord-rich-presence\"\n\n[dependencies]\nserde_json = \"1.0\"\nserde = \"1.0\"\nserde_repr = \"0.1\"\nserde_derive = \"1.0\"\nlog = \"0.4.26\"\nthiserror = \"2.0.12\"\nlibc = \"0.2.191\"\n\n[dependencies.uuid]\nversion = \"0.8\"\nfeatures = [\"v4\"]\n",
         "dest": "cargo/vendor/discord-rich-presence",
         "dest-filename": "Cargo.toml"
     },
