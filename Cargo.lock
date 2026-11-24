@@ -373,7 +373,7 @@ dependencies = [
 [[package]]
 name = "discord-rich-presence"
 version = "1.1.0"
-source = "git+https://github.com/auggeeo/discord-rich-presence.git#1d380fb0c24f0702c6b3ba438fdba153ec3b0f01"
+source = "git+https://github.com/auggeeo/discord-rich-presence.git#5e7de09db5dcfc4cc0a7ca7eaedacbff385331ff"
 dependencies = [
  "libc",
  "log",
